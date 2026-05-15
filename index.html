@@ -11,6 +11,11 @@
   <meta property="og:image" content="assets/screen-report.jpg">
   <meta name="theme-color" content="#0d0a21">
   <link rel="icon" href="assets/app-icon.png">
+  <script>
+    if ("scrollRestoration" in history) {
+      history.scrollRestoration = "manual";
+    }
+  </script>
   <style>
     :root {
       --ink: #15141c;
@@ -958,6 +963,24 @@
 
   <script>
     (() => {
+      const shouldResetScroll = () => {
+        const navigation = performance.getEntriesByType("navigation")[0];
+        return !window.location.hash || navigation?.type === "reload";
+      };
+
+      const resetScrollToHero = () => {
+        if (!shouldResetScroll()) return;
+        requestAnimationFrame(() => {
+          window.scrollTo(0, 0);
+          document.documentElement.scrollTop = 0;
+          document.body.scrollTop = 0;
+        });
+      };
+
+      window.addEventListener("pageshow", resetScrollToHero);
+      window.addEventListener("load", resetScrollToHero);
+      resetScrollToHero();
+
       const lightbox = document.getElementById("sampleLightbox");
       const image = document.getElementById("sampleLightboxImage");
       const title = document.getElementById("sampleLightboxTitle");
