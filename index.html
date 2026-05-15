@@ -1,0 +1,700 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Market Scope（マーケスコープ）｜公的データで商圏分析レポートを作成</title>
+  <meta name="description" content="Market Scope（マーケスコープ）は、地域と業種を選ぶだけで、公的統計と行政APIをもとに商圏分析レポートを作成できるiPhoneアプリです。PDF / Excel保存、購入前サンプル確認に対応。">
+  <meta property="og:title" content="Market Scope（マーケスコープ）">
+  <meta property="og:description" content="地域と業種を選ぶだけ。公的データをもとに商圏分析レポートを作成。">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="assets/screen-report.jpg">
+  <meta name="theme-color" content="#0d0a21">
+  <link rel="icon" href="assets/app-icon.png">
+  <style>
+    :root {
+      --ink: #15141c;
+      --muted: #5f6370;
+      --line: #e6e1d6;
+      --paper: #faf7ef;
+      --paper-strong: #fffdf8;
+      --night: #0d0a21;
+      --night-2: #171330;
+      --purple: #2e1664;
+      --gold: #d4af37;
+      --gold-soft: #f2d980;
+      --teal: #0f766e;
+      --blue: #315d91;
+      --max: 1160px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", "YuGothic", "Noto Sans JP", sans-serif;
+      color: var(--ink);
+      background: var(--paper);
+      line-height: 1.75;
+      letter-spacing: 0;
+    }
+    img { max-width: 100%; display: block; }
+    figure { margin: 0; }
+    a { color: inherit; }
+    .wrap {
+      width: min(var(--max), calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .hero {
+      min-height: min(760px, 92svh);
+      position: relative;
+      overflow: hidden;
+      color: #fff;
+      background:
+        linear-gradient(90deg, rgba(13, 10, 33, 0.98) 0%, rgba(13, 10, 33, 0.90) 38%, rgba(13, 10, 33, 0.36) 70%, rgba(13, 10, 33, 0.62) 100%),
+        url("assets/screen-report.jpg") right 18% center / min(52vw, 620px) auto no-repeat,
+        radial-gradient(circle at 84% 16%, rgba(212, 175, 55, 0.18), transparent 28%),
+        linear-gradient(135deg, #0d0a21 0%, #24124a 54%, #071b22 100%);
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0;
+      height: 160px;
+      background: linear-gradient(180deg, transparent, var(--paper));
+      pointer-events: none;
+    }
+    .nav {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 0;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+    .brand img {
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+    }
+    .brand b {
+      display: block;
+      font-size: 15px;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+    .brand span {
+      display: block;
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.68);
+      white-space: nowrap;
+    }
+    .navlinks {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.78);
+    }
+    .navlinks a { text-decoration: none; }
+    .status {
+      color: #14120a;
+      background: var(--gold-soft);
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .hero-body {
+      position: relative;
+      z-index: 2;
+      width: min(660px, 100%);
+      padding: clamp(54px, 10vw, 120px) 0 130px;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--gold-soft);
+      font-weight: 700;
+      font-size: 13px;
+      margin-bottom: 18px;
+    }
+    .eyebrow::before {
+      content: "";
+      width: 42px;
+      height: 1px;
+      background: var(--gold-soft);
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 {
+      margin-bottom: 22px;
+      font-family: "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", serif;
+      font-size: clamp(42px, 7.2vw, 82px);
+      line-height: 1.05;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+    .lead {
+      font-size: clamp(17px, 2.3vw, 21px);
+      line-height: 1.9;
+      color: rgba(255, 255, 255, 0.88);
+      max-width: 590px;
+      margin-bottom: 28px;
+    }
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 28px;
+    }
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 0 18px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+    .primary {
+      color: #17120a;
+      background: linear-gradient(135deg, #f7df8d, #d4af37);
+      box-shadow: 0 12px 28px rgba(212, 175, 55, 0.22);
+    }
+    .secondary {
+      border: 1px solid rgba(255, 255, 255, 0.36);
+      color: #fff;
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .proof {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      max-width: 590px;
+    }
+    .proof div {
+      border-top: 1px solid rgba(212, 175, 55, 0.42);
+      padding-top: 10px;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .proof b {
+      display: block;
+      color: #fff;
+      font-size: 15px;
+      margin-bottom: 2px;
+    }
+
+    main { position: relative; }
+    section {
+      padding: clamp(54px, 8vw, 92px) 0;
+    }
+    .section-head {
+      max-width: 760px;
+      margin-bottom: 28px;
+    }
+    .section-kicker {
+      color: var(--teal);
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+    h2 {
+      font-size: clamp(28px, 4.6vw, 48px);
+      line-height: 1.2;
+      letter-spacing: 0;
+      margin-bottom: 16px;
+    }
+    .section-head p,
+    .plain-text {
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+    .screen-strip {
+      margin-top: -76px;
+      position: relative;
+      z-index: 3;
+    }
+    .screens {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: clamp(14px, 2vw, 24px);
+      align-items: start;
+    }
+    .phone {
+      background: #111;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 28px;
+      padding: 9px;
+      box-shadow: 0 28px 60px rgba(19, 16, 35, 0.22);
+    }
+    .phone img {
+      border-radius: 20px;
+      width: 100%;
+      aspect-ratio: 1320 / 2868;
+      object-fit: cover;
+    }
+    .phone:nth-child(2) { margin-top: 36px; }
+    .phone:nth-child(3) { margin-top: 72px; }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .feature {
+      background: var(--paper-strong);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 20px;
+      min-height: 188px;
+    }
+    .feature .num {
+      color: var(--blue);
+      font-weight: 900;
+      margin-bottom: 18px;
+    }
+    .feature h3 {
+      font-size: 18px;
+      line-height: 1.45;
+      margin-bottom: 10px;
+    }
+    .feature p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.75;
+      margin-bottom: 0;
+    }
+
+    .trust-band {
+      background: #f2eee4;
+      border-block: 1px solid var(--line);
+    }
+    .trust-layout {
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: clamp(28px, 5vw, 70px);
+      align-items: center;
+    }
+    .checks {
+      display: grid;
+      gap: 12px;
+    }
+    .check {
+      display: grid;
+      grid-template-columns: 22px 1fr;
+      gap: 12px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .check b {
+      color: var(--teal);
+      font-size: 17px;
+      line-height: 1.55;
+    }
+    .check span {
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .sample-stack {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .sample-stack img {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      aspect-ratio: 1060 / 1500;
+      object-fit: cover;
+      box-shadow: 0 20px 45px rgba(38, 32, 24, 0.12);
+    }
+    .sample-stack img:nth-child(2) { margin-top: 28px; }
+    .sample-stack img:nth-child(3) { margin-top: 56px; }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .step {
+      border-top: 3px solid var(--gold);
+      padding: 20px 0 0;
+    }
+    .step h3 {
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+    .step p {
+      color: var(--muted);
+      margin-bottom: 0;
+    }
+
+    .price {
+      background: var(--night);
+      color: #fff;
+      overflow: hidden;
+    }
+    .price-grid {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: clamp(28px, 5vw, 72px);
+      align-items: center;
+    }
+    .price h2 { color: #fff; }
+    .price .section-kicker { color: var(--gold-soft); }
+    .price p { color: rgba(255, 255, 255, 0.74); }
+    .price-panel {
+      border: 1px solid rgba(212, 175, 55, 0.5);
+      border-radius: 8px;
+      padding: clamp(22px, 4vw, 36px);
+      background: linear-gradient(135deg, rgba(46, 22, 100, 0.82), rgba(11, 27, 34, 0.88));
+    }
+    .yen {
+      font-size: clamp(56px, 9vw, 92px);
+      line-height: 1;
+      font-weight: 900;
+      color: var(--gold-soft);
+      margin-bottom: 10px;
+    }
+    .price-panel ul {
+      margin: 20px 0 0;
+      padding-left: 1.2em;
+      color: rgba(255, 255, 255, 0.84);
+    }
+
+    .industries {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+    .industries span {
+      border: 1px solid var(--line);
+      background: var(--paper-strong);
+      border-radius: 999px;
+      padding: 7px 12px;
+      font-size: 13px;
+      color: #34313b;
+      white-space: nowrap;
+    }
+
+    .cta {
+      text-align: center;
+      background: var(--paper-strong);
+      border-top: 1px solid var(--line);
+    }
+    .cta h2 { margin-inline: auto; max-width: 760px; }
+    .cta p { max-width: 720px; margin-inline: auto; color: var(--muted); }
+    .cta-actions {
+      margin-top: 28px;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .button.dark {
+      color: #fff;
+      background: var(--night);
+    }
+    .button.outline {
+      color: var(--ink);
+      border: 1px solid #c9bfaa;
+      background: transparent;
+    }
+
+    footer {
+      padding: 30px 0;
+      color: #ebe7dc;
+      background: #111019;
+      font-size: 12px;
+    }
+    footer .wrap {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+    footer a { color: #fff; }
+
+    @media (max-width: 900px) {
+      .hero {
+        min-height: auto;
+        background:
+          linear-gradient(180deg, rgba(13, 10, 33, 0.98) 0%, rgba(13, 10, 33, 0.90) 45%, rgba(13, 10, 33, 0.54) 100%),
+          url("assets/screen-report.jpg") right -86px bottom 10px / 360px auto no-repeat,
+          linear-gradient(135deg, #0d0a21 0%, #24124a 58%, #071b22 100%);
+      }
+      .navlinks a { display: none; }
+      .hero-body { padding: 44px 0 132px; }
+      .proof,
+      .feature-grid,
+      .flow,
+      .trust-layout,
+      .price-grid {
+        grid-template-columns: 1fr;
+      }
+      .screens {
+        grid-template-columns: 1fr;
+        overflow: visible;
+        padding-bottom: 0;
+      }
+      .phone {
+        width: min(100%, 360px);
+        margin-inline: auto;
+      }
+      .phone:nth-child(n) { margin-top: 0; }
+      .sample-stack img:nth-child(n) { margin-top: 0; }
+      .sample-stack {
+        grid-template-columns: 1fr;
+        overflow: visible;
+        padding-bottom: 0;
+      }
+      .sample-stack img {
+        width: min(100%, 360px);
+        margin-inline: auto;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .wrap { width: min(100% - 28px, var(--max)); }
+      .brand b { font-size: 14px; }
+      .brand span { display: none; }
+      .status { font-size: 11px; padding: 6px 8px; }
+      .hero-body { padding-top: 32px; }
+      .lead { font-size: 16px; }
+      .hero-actions .button { width: 100%; }
+      .feature { min-height: auto; }
+      .price-panel { padding: 22px; }
+      footer .wrap { display: block; }
+    }
+
+    @media (max-width: 360px) {
+      .nav { gap: 8px; }
+      .brand { gap: 8px; }
+      .brand img {
+        width: 38px;
+        height: 38px;
+      }
+      .brand b { font-size: 13px; }
+      .status {
+        font-size: 10px;
+        padding: 5px 7px;
+      }
+    }
+  </style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Market Scope",
+    "alternateName": "マーケスコープ",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "iOS",
+    "offers": {
+      "@type": "Offer",
+      "price": "480",
+      "priceCurrency": "JPY",
+      "description": "1レポート生成"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "BANTEX"
+    }
+  }
+  </script>
+</head>
+<body>
+  <header class="hero">
+    <nav class="wrap nav" aria-label="主要ナビゲーション">
+      <div class="brand">
+        <img src="assets/app-icon.png" alt="Market Scope app icon">
+        <div>
+          <b>Market Scope</b>
+          <span>マーケスコープ</span>
+        </div>
+      </div>
+      <div class="navlinks">
+        <a href="#screens">画面</a>
+        <a href="#trust">データ方針</a>
+        <a href="#samples">サンプル</a>
+        <span class="status">App Store公開準備中</span>
+      </div>
+    </nav>
+
+    <div class="wrap">
+      <div class="hero-body">
+        <div class="eyebrow">BANTEX MARKET SCOPE</div>
+        <h1>地域と業種を選ぶだけ。商圏分析を、iPhoneで。</h1>
+        <p class="lead">Market Scopeは、公的統計と行政APIで取得できる数値をもとに、出店検討に使える1ページレポートを作成するiPhoneアプリです。</p>
+        <div class="hero-actions">
+          <a class="button primary" href="#screens">アプリ画面を見る</a>
+          <a class="button secondary" href="#samples">サンプルレポートを見る</a>
+        </div>
+        <div class="proof" aria-label="主な特徴">
+          <div><b>公的データ基準</b>推測値を作らず、取得できた値を優先</div>
+          <div><b>PDF / Excel保存</b>打ち合わせや検討資料に使いやすい出力</div>
+          <div><b>1レポート480円</b>購入前にサンプル確認が可能</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="screens" class="screen-strip" aria-label="アプリスクリーンショット">
+      <div class="wrap screens">
+        <figure class="phone">
+          <img src="assets/screen-home.jpg" alt="Market Scopeのホーム画面。地域と業種を選択して分析開始できる。">
+        </figure>
+        <figure class="phone">
+          <img src="assets/screen-report.jpg" alt="Market Scopeの分析レポート画面。商圏分析の要点と指標を確認できる。">
+        </figure>
+        <figure class="phone">
+          <img src="assets/screen-paywall.jpg" alt="Market Scopeの購入画面。1レポート480円の消費型課金を案内している。">
+        </figure>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <div class="section-head">
+          <div class="section-kicker">WHAT IT DOES</div>
+          <h2>開業前の「この場所で大丈夫か」を、数字と要点で見る。</h2>
+          <p>人口、昼間人口、業種別事業所数、法人情報、地価、周辺環境などを、エリアと業種に合わせて整理します。AIは取得済みの数値を読み解き、出店判断の要点として文章化します。</p>
+        </div>
+        <div class="feature-grid">
+          <article class="feature">
+            <div class="num">01</div>
+            <h3>地域と業種を選択</h3>
+            <p>都道府県、市区町村、業種を選ぶだけ。飲食店、美容室、小売店、クリニック、介護、塾、保育、整体に対応します。</p>
+          </article>
+          <article class="feature">
+            <div class="num">02</div>
+            <h3>公的データを取得</h3>
+            <p>e-Stat、gBizINFO、不動産情報ライブラリなど、行政・公的データを中心に値を取得します。</p>
+          </article>
+          <article class="feature">
+            <div class="num">03</div>
+            <h3>AIが要点を整理</h3>
+            <p>取得済みの数値だけをもとに、メリット、リスク、候補業態、確認すべき項目を読みやすく整理します。</p>
+          </article>
+          <article class="feature">
+            <div class="num">04</div>
+            <h3>PDF / Excelで保存</h3>
+            <p>作成した分析結果は、A4 1ページのPDFやExcel形式で保存。商談・社内検討・相談の下書きに使えます。</p>
+          </article>
+        </div>
+        <div class="industries" aria-label="対応業種">
+          <span>飲食店</span><span>美容室・理容室</span><span>小売店</span><span>クリニック・歯科</span><span>介護・福祉</span><span>学習塾・教育</span><span>保育園・学童</span><span>整体・マッサージ</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="trust" class="trust-band">
+      <div class="wrap trust-layout">
+        <div>
+          <div class="section-kicker">DATA POLICY</div>
+          <h2>信用できる情報アプリにするために、数値を作りません。</h2>
+          <p class="plain-text">Market Scopeは、取得できた公式値を出典と一緒に扱います。取れない値は無理に埋めず、空欄として残します。商圏分析で一番怖い「見た目だけ正しい数字」を避けるための設計です。</p>
+        </div>
+        <div class="checks">
+          <div class="check"><b>✓</b><div><b>出典をレポート内に表示</b><br><span>取得元、対象年、単位が分かる形で確認できます。</span></div></div>
+          <div class="check"><b>✓</b><div><b>未取得と0件を分けて表示</b><br><span>値が無いのか、本当に0件なのかを混同しない設計です。</span></div></div>
+          <div class="check"><b>✓</b><div><b>規制業種には注意表示</b><br><span>医療、介護、保育、整体などは許認可や専門確認が必要な前提で表示します。</span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="samples">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="section-kicker">SAMPLES</div>
+          <h2>購入前に、実際の出力イメージを確認できます。</h2>
+          <p>都市部、地方、小規模地域のサンプルをアプリ内に同梱。数値が取得できない地域・業種では、無理に埋めずに空欄として表示されます。</p>
+        </div>
+        <div class="sample-stack">
+          <img src="assets/sample-shibuya.jpg" alt="渋谷区、飲食店のサンプルレポート画像">
+          <img src="assets/sample-rebun.jpg" alt="礼文町、学習塾・教育のサンプルレポート画像">
+          <img src="assets/sample-kamikawa.jpg" alt="上川町、飲食店のサンプルレポート画像">
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <div class="section-head">
+          <div class="section-kicker">FLOW</div>
+          <h2>調べる、読む、保存する。店づくりの最初の1枚に。</h2>
+        </div>
+        <div class="flow">
+          <div class="step">
+            <h3>1. エリアを選ぶ</h3>
+            <p>候補地の都道府県と市区町村を選びます。</p>
+          </div>
+          <div class="step">
+            <h3>2. 業種を選ぶ</h3>
+            <p>飲食、美容、小売、医療、介護、教育などから選択します。</p>
+          </div>
+          <div class="step">
+            <h3>3. レポート化</h3>
+            <p>AIが取得済みデータを整理し、PDF / Excelで保存できます。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="price">
+      <div class="wrap price-grid">
+        <div>
+          <div class="section-kicker">PRICE</div>
+          <h2>必要なときだけ、1レポートずつ。</h2>
+          <p>アプリは無料で開始できます。購入前にサンプルを確認し、必要なエリア・業種のレポートだけを生成できます。</p>
+        </div>
+        <div class="price-panel">
+          <div class="yen">¥480</div>
+          <p>1レポート生成 / 消費型アプリ内課金</p>
+          <ul>
+            <li>初回サンプル確認に対応</li>
+            <li>作成済みレポートは履歴から再閲覧</li>
+            <li>PDF / Excel保存に対応</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta">
+      <div class="wrap">
+        <h2>Market Scopeは、App Store公開準備中です。</h2>
+        <p>現在、TestFlightで検証中です。App Store公開後は、このLPからダウンロード導線を追加します。</p>
+        <div class="cta-actions">
+          <a class="button dark" href="#screens">画面をもう一度見る</a>
+          <a class="button outline" href="https://bantex.jp/privacy.html">プライバシーポリシー</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <span>© 2026 BANTEX / Makoto Banno</span>
+      <span>Market Scope is currently preparing for App Store release.</span>
+    </div>
+  </footer>
+</body>
+</html>
