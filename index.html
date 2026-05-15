@@ -188,6 +188,30 @@
       background: var(--gold-soft);
     }
     h1, h2, h3, p { margin-top: 0; }
+    h1, h2, h3, p,
+    .button,
+    .proof div,
+    .check,
+    .industries span {
+      line-break: strict;
+      word-break: normal;
+      word-break: auto-phrase;
+      overflow-wrap: normal;
+    }
+    h2, h3 { text-wrap: balance; }
+    p,
+    .lead,
+    .section-head p,
+    .plain-text,
+    .feature p,
+    .proof div,
+    .check span,
+    .step p,
+    .price p,
+    .cta p {
+      text-wrap: pretty;
+    }
+    .keep { white-space: nowrap; }
     h1 {
       margin-bottom: 22px;
       font-family: "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", serif;
@@ -360,10 +384,17 @@
       padding: 14px 0;
       border-bottom: 1px solid var(--line);
     }
-    .check b {
+    .check > b {
       color: var(--teal);
       font-size: 17px;
       line-height: 1.55;
+    }
+    .check strong {
+      display: block;
+      color: var(--ink);
+      font-size: 15px;
+      line-height: 1.45;
+      margin-bottom: 2px;
     }
     .check span {
       color: var(--muted);
@@ -781,8 +812,8 @@
       <div class="hero-body">
         <div class="eyebrow">BANTEX MARKET SCOPE</div>
         <div class="hero-status">App Store公開準備中</div>
-        <h1><span class="hero-line">地域と業種を選ぶだけ。</span><span class="hero-line">商圏分析を、iPhoneで。</span></h1>
-        <p class="lead">Market Scopeは、公的統計と行政APIで取得できる数値をもとに、出店検討に使える1ページレポートを作成するiPhoneアプリです。</p>
+        <h1><span class="hero-line">地域と業種だけで、</span><span class="hero-line">商圏分析レポート。</span></h1>
+        <p class="lead"><span class="keep">Market Scope</span>は、<span class="keep">公的統計と行政API</span>から、<span class="keep">出店検討</span>に使える<span class="keep">1ページレポート</span>を作成するiPhoneアプリです。</p>
         <div class="hero-actions">
           <a class="button primary" href="#screens">アプリ画面を見る</a>
           <a class="button secondary" href="#samples">サンプルレポートを見る</a>
@@ -818,29 +849,29 @@
       <div class="wrap">
         <div class="section-head">
           <div class="section-kicker">WHAT IT DOES</div>
-          <h2>開業前の「この場所で大丈夫か」を、数字と要点で見る。</h2>
-          <p>人口、昼間人口、業種別事業所数、法人情報、地価、周辺環境などを、エリアと業種に合わせて整理します。AIは取得済みの数値を読み解き、出店判断の要点として文章化します。</p>
+          <h2>開業前の不安を、数字と要点で確認。</h2>
+          <p>人口、昼間人口、事業所数、法人情報、地価、周辺環境を、地域と業種別に整理します。取得済みの数値だけをAIが読み解き、出店判断の要点を文章化します。</p>
         </div>
         <div class="feature-grid">
           <article class="feature">
             <div class="num">01</div>
             <h3>地域と業種を選択</h3>
-            <p>都道府県、市区町村、業種を選ぶだけ。飲食店、美容室、小売店、クリニック、介護、塾、保育、整体に対応します。</p>
+            <p>選ぶ項目は、<span class="keep">都道府県・市区町村・業種</span>だけ。飲食、美容、小売、医療、介護、教育、整体に対応します。</p>
           </article>
           <article class="feature">
             <div class="num">02</div>
             <h3>公的データを取得</h3>
-            <p>e-Stat、gBizINFO、不動産情報ライブラリなど、行政・公的データを中心に値を取得します。</p>
+            <p><span class="keep">e-Stat</span>、<span class="keep">gBizINFO</span>、<span class="keep">不動産情報ライブラリ</span>などの公式情報を使います。</p>
           </article>
           <article class="feature">
             <div class="num">03</div>
             <h3>AIが要点を整理</h3>
-            <p>取得済みの数値だけをもとに、メリット、リスク、候補業態、確認すべき項目を読みやすく整理します。</p>
+            <p>取得済みの数値だけをもとに、メリット、リスク、候補業態、確認項目を整理します。</p>
           </article>
           <article class="feature">
             <div class="num">04</div>
             <h3>PDF / Excelで保存</h3>
-            <p>作成した分析結果は、A4 1ページのPDFやExcel形式で保存。商談・社内検討・相談の下書きに使えます。</p>
+            <p>分析結果は、<span class="keep">A4一枚</span>の<span class="keep">PDF / Excel</span>で保存。商談、社内検討、専門家への相談に使えます。</p>
           </article>
         </div>
         <div class="industries" aria-label="対応業種">
@@ -853,13 +884,13 @@
       <div class="wrap trust-layout">
         <div>
           <div class="section-kicker">DATA POLICY</div>
-          <h2>信用できる情報アプリにするために、数値を作りません。</h2>
-          <p class="plain-text">Market Scopeは、取得できた公式値を出典と一緒に扱います。取れない値は無理に埋めず、空欄として残します。商圏分析で一番怖い「見た目だけ正しい数字」を避けるための設計です。</p>
+          <h2>信用第一。数値を作りません。</h2>
+          <p class="plain-text">公式値は、出典と一緒に扱います。<span class="keep">未取得は空欄表示</span>。<span class="keep">見た目だけ正しい数字</span>を避け、商圏分析の信用を優先します。</p>
         </div>
         <div class="checks">
-          <div class="check"><b>✓</b><div><b>出典をレポート内に表示</b><br><span>取得元、対象年、単位が分かる形で確認できます。</span></div></div>
-          <div class="check"><b>✓</b><div><b>未取得と0件を分けて表示</b><br><span>値が無いのか、本当に0件なのかを混同しない設計です。</span></div></div>
-          <div class="check"><b>✓</b><div><b>規制業種には注意表示</b><br><span>医療、介護、保育、整体などは許認可や専門確認が必要な前提で表示します。</span></div></div>
+          <div class="check"><b>✓</b><div><strong>出典をレポート内に表示</strong><span>取得元、対象年、単位を確認できます。</span></div></div>
+          <div class="check"><b>✓</b><div><strong>未取得と0件を分ける</strong><span>未取得なのか、本当に0件なのかを混同しません。</span></div></div>
+          <div class="check"><b>✓</b><div><strong>規制業種には注意表示</strong><span>医療、介護、保育、整体などは、許認可や専門確認が必要な前提で扱います。</span></div></div>
         </div>
       </div>
     </section>
@@ -868,8 +899,8 @@
       <div class="wrap">
         <div class="section-head">
           <div class="section-kicker">SAMPLES</div>
-          <h2>購入前に、実際の出力イメージを確認できます。</h2>
-          <p>都市部、地方、小規模地域のサンプルをアプリ内に同梱。数値が取得できない地域・業種では、無理に埋めずに空欄として表示されます。</p>
+          <h2>購入前に、実際の出力を確認。</h2>
+          <p>都市部、地方、小規模地域のサンプルを同梱。取得できない値は無理に埋めず、空欄表示にします。</p>
         </div>
         <div class="sample-stack">
           <button class="sample-trigger" type="button" data-full="assets/sample-shibuya.jpg" data-title="渋谷区 / 飲食店のサンプルレポート">
@@ -913,7 +944,7 @@
         <div>
           <div class="section-kicker">PRICE</div>
           <h2>必要なときだけ、1レポートずつ。</h2>
-          <p>アプリは無料で開始できます。購入前にサンプルを確認し、必要なエリア・業種のレポートだけを生成できます。</p>
+          <p>無料で開始。購入前にサンプルを確認し、必要な<span class="keep">地域・業種</span>のレポートだけ生成できます。</p>
         </div>
         <div class="price-panel">
           <div class="yen">¥480</div>
@@ -929,8 +960,8 @@
 
     <section class="cta">
       <div class="wrap">
-        <h2>Market Scopeは、App Store公開準備中です。</h2>
-        <p>現在、TestFlightで検証中です。App Store公開後は、このLPからダウンロード導線を追加します。</p>
+        <h2><span class="keep">App Store</span>公開準備中。</h2>
+        <p>現在は<span class="keep">TestFlight</span>で検証中です。<span class="keep">App Store</span>公開後、このLPにダウンロード導線を追加します。</p>
         <div class="cta-actions">
           <a class="button dark" href="#screens">画面をもう一度見る</a>
           <a class="button outline" href="https://bantex.jp/privacy.html">プライバシーポリシー</a>
