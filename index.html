@@ -369,15 +369,127 @@
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 12px;
     }
-    .sample-stack img {
+    .sample-trigger {
+      position: relative;
+      display: block;
+      width: 100%;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      cursor: zoom-in;
+      color: inherit;
+      font: inherit;
+      text-align: inherit;
+    }
+    .sample-trigger img {
       border: 1px solid var(--line);
       border-radius: 8px;
       aspect-ratio: 1060 / 1500;
       object-fit: cover;
       box-shadow: 0 20px 45px rgba(38, 32, 24, 0.12);
     }
-    .sample-stack img:nth-child(2) { margin-top: 28px; }
-    .sample-stack img:nth-child(3) { margin-top: 56px; }
+    .sample-trigger::after {
+      content: "拡大して見る";
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      color: #17120a;
+      background: rgba(242, 217, 128, 0.94);
+      font-size: 12px;
+      font-weight: 800;
+      box-shadow: 0 10px 22px rgba(16, 12, 28, 0.18);
+    }
+    .sample-trigger:focus-visible {
+      outline: 3px solid var(--teal);
+      outline-offset: 4px;
+      border-radius: 8px;
+    }
+    .sample-trigger:nth-child(2) { margin-top: 28px; }
+    .sample-trigger:nth-child(3) { margin-top: 56px; }
+
+    body.lightbox-open { overflow: hidden; }
+    .sample-lightbox[hidden] { display: none; }
+    .sample-lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 40;
+      display: grid;
+      place-items: center;
+      padding: 22px;
+      background: rgba(7, 6, 18, 0.86);
+    }
+    .lightbox-panel {
+      width: min(100%, 1120px);
+      max-height: min(92dvh, 940px);
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      border: 1px solid rgba(242, 217, 128, 0.34);
+      border-radius: 8px;
+      background: #111019;
+      box-shadow: 0 34px 90px rgba(0, 0, 0, 0.48);
+      overflow: hidden;
+    }
+    .lightbox-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px;
+      color: #fff;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .lightbox-title {
+      min-width: 0;
+      margin: 0;
+      font-size: 15px;
+      font-weight: 800;
+      line-height: 1.4;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .lightbox-actions {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .lightbox-button {
+      min-height: 38px;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      border-radius: 8px;
+      padding: 0 12px;
+      color: #fff;
+      background: rgba(255, 255, 255, 0.08);
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .lightbox-button.primary-close {
+      color: #17120a;
+      background: var(--gold-soft);
+      border-color: var(--gold-soft);
+    }
+    .lightbox-scroll {
+      overflow: auto;
+      overscroll-behavior: contain;
+      padding: 14px;
+      touch-action: pan-x pan-y pinch-zoom;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent),
+        #0d0a21;
+    }
+    .lightbox-scroll img {
+      width: min(100%, 860px);
+      max-width: none;
+      height: auto;
+      margin: 0 auto;
+      border-radius: 8px;
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.38);
+    }
+    .sample-lightbox.is-zoomed .lightbox-scroll img {
+      width: min(150vw, 1280px);
+    }
 
     .flow {
       display: grid;
@@ -532,13 +644,13 @@
         margin-inline: auto;
       }
       .phone:nth-child(n) { margin-top: 0; }
-      .sample-stack img:nth-child(n) { margin-top: 0; }
+      .sample-trigger:nth-child(n) { margin-top: 0; }
       .sample-stack {
         grid-template-columns: 1fr;
         overflow: visible;
         padding-bottom: 0;
       }
-      .sample-stack img {
+      .sample-trigger {
         width: min(100%, 360px);
         margin-inline: auto;
       }
@@ -558,6 +670,26 @@
       .hero-actions .button { width: 100%; }
       .feature { min-height: auto; }
       .price-panel { padding: 22px; }
+      .sample-lightbox { padding: 10px; }
+      .lightbox-panel { max-height: 94dvh; }
+      .lightbox-bar {
+        align-items: flex-start;
+        padding: 10px;
+      }
+      .lightbox-title {
+        white-space: normal;
+        font-size: 13px;
+      }
+      .lightbox-button {
+        min-height: 34px;
+        padding: 0 9px;
+        font-size: 12px;
+      }
+      .lightbox-scroll { padding: 10px; }
+      .lightbox-scroll img { width: min(100%, 760px); }
+      .sample-lightbox.is-zoomed .lightbox-scroll img {
+        width: min(210vw, 1080px);
+      }
       footer .wrap { display: block; }
     }
 
@@ -735,9 +867,15 @@
           <p>都市部、地方、小規模地域のサンプルをアプリ内に同梱。数値が取得できない地域・業種では、無理に埋めずに空欄として表示されます。</p>
         </div>
         <div class="sample-stack">
-          <img src="assets/sample-shibuya.jpg" alt="渋谷区、飲食店のサンプルレポート画像">
-          <img src="assets/sample-rebun.jpg" alt="礼文町、学習塾・教育のサンプルレポート画像">
-          <img src="assets/sample-kamikawa.jpg" alt="上川町、飲食店のサンプルレポート画像">
+          <button class="sample-trigger" type="button" data-full="assets/sample-shibuya.jpg" data-title="渋谷区 / 飲食店のサンプルレポート">
+            <img src="assets/sample-shibuya.jpg" alt="渋谷区、飲食店のサンプルレポート画像">
+          </button>
+          <button class="sample-trigger" type="button" data-full="assets/sample-rebun.jpg" data-title="礼文町 / 学習塾・教育のサンプルレポート">
+            <img src="assets/sample-rebun.jpg" alt="礼文町、学習塾・教育のサンプルレポート画像">
+          </button>
+          <button class="sample-trigger" type="button" data-full="assets/sample-kamikawa.jpg" data-title="上川町 / 飲食店のサンプルレポート">
+            <img src="assets/sample-kamikawa.jpg" alt="上川町、飲食店のサンプルレポート画像">
+          </button>
         </div>
       </div>
     </section>
@@ -802,5 +940,70 @@
       <span>Market Scope is currently preparing for App Store release.</span>
     </div>
   </footer>
+
+  <div class="sample-lightbox" id="sampleLightbox" role="dialog" aria-modal="true" aria-labelledby="sampleLightboxTitle" hidden>
+    <div class="lightbox-panel">
+      <div class="lightbox-bar">
+        <p class="lightbox-title" id="sampleLightboxTitle">サンプルレポート</p>
+        <div class="lightbox-actions">
+          <button class="lightbox-button" type="button" data-lightbox-zoom>拡大</button>
+          <button class="lightbox-button primary-close" type="button" data-lightbox-close>閉じる</button>
+        </div>
+      </div>
+      <div class="lightbox-scroll" tabindex="0">
+        <img src="" alt="" id="sampleLightboxImage">
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const lightbox = document.getElementById("sampleLightbox");
+      const image = document.getElementById("sampleLightboxImage");
+      const title = document.getElementById("sampleLightboxTitle");
+      const zoomButton = lightbox.querySelector("[data-lightbox-zoom]");
+      const closeButton = lightbox.querySelector("[data-lightbox-close]");
+      const scrollArea = lightbox.querySelector(".lightbox-scroll");
+      let lastFocus = null;
+
+      const closeLightbox = () => {
+        lightbox.hidden = true;
+        lightbox.classList.remove("is-zoomed");
+        document.body.classList.remove("lightbox-open");
+        image.removeAttribute("src");
+        zoomButton.textContent = "拡大";
+        if (lastFocus) lastFocus.focus();
+      };
+
+      const openLightbox = (button) => {
+        lastFocus = button;
+        const thumbnail = button.querySelector("img");
+        image.src = button.dataset.full;
+        image.alt = thumbnail.alt;
+        title.textContent = button.dataset.title || thumbnail.alt;
+        lightbox.hidden = false;
+        document.body.classList.add("lightbox-open");
+        scrollArea.scrollTop = 0;
+        scrollArea.scrollLeft = 0;
+        closeButton.focus();
+      };
+
+      document.querySelectorAll(".sample-trigger").forEach((button) => {
+        button.addEventListener("click", () => openLightbox(button));
+      });
+
+      closeButton.addEventListener("click", closeLightbox);
+      zoomButton.addEventListener("click", () => {
+        const zoomed = lightbox.classList.toggle("is-zoomed");
+        zoomButton.textContent = zoomed ? "標準" : "拡大";
+      });
+      lightbox.addEventListener("click", (event) => {
+        if (event.target === lightbox) closeLightbox();
+      });
+      window.addEventListener("keydown", (event) => {
+        if (!lightbox.hidden && event.key === "Escape") closeLightbox();
+      });
+    })();
+  </script>
 </body>
 </html>
